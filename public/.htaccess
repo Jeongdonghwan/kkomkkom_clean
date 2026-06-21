@@ -1,0 +1,11 @@
+# SPA fallback (Apache 정적 호스팅 / Cafe24) — 딥링크가 index.html 로 처리되도록
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  # 실제 파일/디렉터리는 그대로 서빙
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+  # 그 외 모든 경로는 index.html 로
+  RewriteRule ^ index.html [L]
+</IfModule>

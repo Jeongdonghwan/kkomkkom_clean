@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>꼼꼼클린 | 프리미엄 토탈 홈케어</title>
+<meta name="description" content="입주청소·줄눈시공·탄성코트·나노코팅·베이크아웃·에어컨분해청소까지, 한 번에 끝내는 토탈 홈케어." />
+
+<!-- ============================================================
+     ⚙️ 교체 항목 (CONFIG + 브랜드명 "꼼꼼클린")
+     1) 전화번호  : CONFIG.PHONE
+     2) 카카오링크: CONFIG.KAKAO_URL
+     3) 시트 연동 : CONFIG.SHEET_ENDPOINT  (Apps Script 웹앱 URL)
+        ▶ Apps Script 코드는 페이지 맨 아래 주석 참고
+     4) 사진      : [data-img] 요소의 background-image 만 교체
+     ============================================================ -->
+
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        brand:{ DEFAULT:'#2E5A43', light:'#3F7A5A', soft:'#6FA386', deep:'#1d2c24' },
+        ink:'#1C211E', muted:'#6E756F', kakao:'#FEE500', paper:'#FBFBF9', card:'#ECEEE9'
+      },
+      fontFamily:{ sans:['"Pretendard Variable"','Pretendard','system-ui','sans-serif'] },
+      borderRadius:{ xl2:'20px' },
+      keyframes:{
+        floaty:{ '0%,100%':{ transform:'translate(0,0)' }, '50%':{ transform:'translate(0,-14px)' } },
+        orb:{ '0%,100%':{ transform:'translate(0,0) scale(1)' }, '50%':{ transform:'translate(30px,-20px) scale(1.1)' } },
+        pulse2:{ '0%,100%':{ boxShadow:'0 0 0 0 rgba(63,122,90,.45)' }, '70%':{ boxShadow:'0 0 0 14px rgba(63,122,90,0)' } },
+      },
+      animation:{
+        floaty:'floaty 6s ease-in-out infinite',
+        orb:'orb 14s ease-in-out infinite',
+        pulse2:'pulse2 2.4s ease-out infinite',
+      }
+    }
+  }
+}
+</script>
+<style>
+  html{scroll-behavior:smooth}
+  body{font-family:"Pretendard Variable",Pretendard,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  /* subtle grain overlay */
+  .grain::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.035;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+  /* reveal on scroll */
+  .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+  .reveal[data-d="1"]{transition-delay:.08s}.reveal[data-d="2"]{transition-delay:.16s}
+  .reveal[data-d="3"]{transition-delay:.24s}.reveal[data-d="4"]{transition-delay:.32s}.reveal[data-d="5"]{transition-delay:.4s}
+  /* before-after slider */
+  .ba-slider{position:relative;overflow:hidden;border-radius:20px;cursor:ew-resize;user-select:none;touch-action:none}
+  .ba-after{position:absolute;inset:0;clip-path:inset(0 50% 0 0)}
+  .ba-handle{position:absolute;top:0;bottom:0;left:50%;width:2px;background:#fff;transform:translateX(-1px);pointer-events:none}
+  .ba-knob{position:absolute;top:50%;left:50%;width:46px;height:46px;border-radius:999px;background:#fff;
+    transform:translate(-50%,-50%);display:grid;place-items:center;box-shadow:0 4px 16px rgba(0,0,0,.3)}
+  /* marquee */
+  .marquee{display:flex;gap:16px;width:max-content;animation:scrollx 38s linear infinite}
+  .marquee.rev{animation-direction:reverse}
+  .marquee-wrap:hover .marquee{animation-play-state:paused}
+  @keyframes scrollx{to{transform:translateX(-50%)}}
+  .no-sb::-webkit-scrollbar{display:none}
+  #hdr.scrolled{background:rgba(251,251,249,.9);backdrop-filter:saturate(140%) blur(8px);box-shadow:0 1px 0 rgba(0,0,0,.05),0 8px 24px rgba(0,0,0,.05)}
+  @media(prefers-reduced-motion:reduce){
+    *{animation:none!important;scroll-behavior:auto}
+    .reveal{opacity:1!important;transform:none!important;transition:none}
+    .marquee{animation:none}
+  }
+</style>
+</head>
+<body class="bg-paper text-ink grain">
+
+<!-- ===== Header ===== -->
+<header id="hdr" class="fixed top-0 inset-x-0 z-50 transition-all duration-300">
+  <div class="max-w-6xl mx-auto px-6 h-[74px] flex items-center justify-between">
+    <a href="#top" class="flex items-center gap-2.5 font-extrabold text-[20px] text-brand">
+      <span class="w-9 h-9 rounded-[10px] grid place-items-center text-white bg-gradient-to-br from-brand to-brand-soft">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+      </span>꼼꼼클린
+    </a>
+    <nav class="hidden md:flex items-center gap-8 font-semibold text-[15px]">
+      <a href="#services" class="hover:text-brand transition">서비스</a>
+      <a href="#work" class="hover:text-brand transition">작업보기</a>
+      <a href="#process" class="hover:text-brand transition">시공과정</a>
+      <a href="#reviews" class="hover:text-brand transition">후기</a>
+      <a href="#" data-kakao class="bg-kakao text-[#3A1D1D] px-5 py-2.5 rounded-full font-extrabold hover:brightness-95 transition">카카오상담</a>
+    </nav>
+    <button id="burger" class="md:hidden text-ink" aria-label="메뉴 열기">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+  </div>
+  <div id="mobileMenu" class="md:hidden hidden bg-paper/95 backdrop-blur border-t border-black/5 px-6 pb-4">
+    <a href="#services" class="block py-3.5 border-b border-black/5 font-semibold">서비스</a>
+    <a href="#work" class="block py-3.5 border-b border-black/5 font-semibold">작업보기</a>
+    <a href="#process" class="block py-3.5 border-b border-black/5 font-semibold">시공과정</a>
+    <a href="#reviews" class="block py-3.5 border-b border-black/5 font-semibold">후기</a>
+    <a href="#" data-kakao class="block py-3.5 font-semibold text-brand">카카오상담</a>
+  </div>
+</header>
+
+<!-- ===== Hero ===== -->
+<section id="top" class="relative min-h-[100svh] flex items-center text-white overflow-hidden">
+  <div class="absolute inset-0 z-0" style="background:radial-gradient(120% 90% at 78% 110%,rgba(214,158,84,.4),transparent 55%),radial-gradient(90% 70% at 20% 10%,rgba(60,90,72,.55),transparent 60%),linear-gradient(160deg,#16221c,#22332a 45%,#2c2218)"></div>
+  <!-- floating orbs -->
+  <div class="absolute -top-10 right-10 w-72 h-72 rounded-full bg-brand-soft/20 blur-3xl animate-orb z-0"></div>
+  <div class="absolute bottom-0 left-1/4 w-80 h-80 rounded-full bg-amber-700/10 blur-3xl animate-orb z-0" style="animation-delay:-6s"></div>
+  <div class="absolute inset-0 z-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent"></div>
+
+  <div class="relative z-10 max-w-6xl mx-auto px-6 w-full">
+    <span class="reveal inline-block text-brand-soft font-bold tracking-[.22em] text-xs mb-5">PREMIUM TOTAL HOME CARE</span>
+    <h1 class="reveal text-[clamp(34px,5.6vw,62px)] font-extrabold leading-[1.15] tracking-[-.03em]" data-d="1">
+      한 집의 시작을<br>가장 깨끗하게 완성합니다
+    </h1>
+    <p class="reveal mt-6 text-[clamp(15px,1.8vw,18px)] font-semibold text-white/85 max-w-xl" data-d="2">
+      입주청소부터 줄눈·코팅·베이크아웃·에어컨까지, 한 번에 끝내는 토탈 홈케어.
+      <span class="block text-white/60 font-medium mt-1">견적 한 번으로 필요한 모든 케어를 묶어드립니다.</span>
+    </p>
+    <div class="reveal flex flex-wrap gap-3 mt-9" data-d="3">
+      <button data-quote class="bg-brand-light hover:bg-[#356a4d] hover:-translate-y-0.5 transition px-7 py-4 rounded-full font-extrabold text-white shadow-lg shadow-black/20">무료 견적 문의하기</button>
+      <a href="tel:01000000000" class="bg-white/95 hover:bg-white transition px-7 py-4 rounded-full font-extrabold text-ink">전화 상담</a>
+    </div>
+  </div>
+  <a href="#about" class="absolute bottom-7 left-1/2 -translate-x-1/2 z-10 text-white/60 animate-floaty" aria-label="아래로">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+  </a>
+</section>
+
+<!-- ===== About + Stats ===== -->
+<section id="about" class="py-24 max-w-6xl mx-auto px-6">
+  <div class="grid lg:grid-cols-2 gap-12 items-start">
+    <div class="reveal">
+      <span class="text-brand-soft font-bold tracking-[.22em] text-xs">ABOUT</span>
+      <h2 class="text-[clamp(26px,3.4vw,38px)] font-extrabold tracking-[-.02em] leading-tight mt-2.5">청결부터 시공까지,<br>한 팀이 책임지는 토탈 홈케어</h2>
+      <p class="text-muted mt-4 text-[16px] leading-relaxed">보이지 않는 곳의 청결부터 내구성을 높이는 전문 시공까지. 여러 업체를 따로 부를 필요 없이, 한 번의 상담으로 입주청소·줄눈·코팅·베이크아웃·에어컨까지 한 팀이 끝까지 책임집니다.</p>
+    </div>
+    <div class="grid grid-cols-2 gap-3.5">
+      <div class="reveal bg-white border border-black/5 rounded-xl2 p-6"><b class="block text-[30px] font-extrabold text-brand"><span class="count" data-target="99">0</span>%</b><span class="text-muted text-sm font-semibold">고객 만족도</span></div>
+      <div class="reveal bg-white border border-black/5 rounded-xl2 p-6" data-d="1"><b class="block text-[30px] font-extrabold text-brand"><span class="count" data-target="6">0</span>대</b><span class="text-muted text-sm font-semibold">토탈 케어 서비스</span></div>
+      <div class="reveal bg-white border border-black/5 rounded-xl2 p-6" data-d="2"><b class="block text-[30px] font-extrabold text-brand">직영</b><span class="text-muted text-sm font-semibold">외주 없는 정직원 시공</span></div>
+      <div class="reveal bg-white border border-black/5 rounded-xl2 p-6" data-d="3"><b class="block text-[30px] font-extrabold text-brand">친환경</b><span class="text-muted text-sm font-semibold">인체 무해 세제·자재</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Services ===== -->
+<section id="services" class="py-24 bg-card">
+  <div class="max-w-6xl mx-auto px-6 text-center">
+    <span class="reveal inline-block text-brand-soft font-bold tracking-[.22em] text-xs">OUR SERVICES</span>
+    <h2 class="reveal text-[clamp(26px,3.4vw,38px)] font-extrabold tracking-[-.02em] mt-2.5" data-d="1">전문 서비스</h2>
+    <p class="reveal text-muted mt-3" data-d="2">입주부터 거주까지, 필요한 케어를 한 곳에서.</p>
+    <div class="grid md:grid-cols-3 gap-[18px] mt-11 text-left">
+      <!-- card -->
+      <div class="reveal group relative h-[230px] rounded-xl2 overflow-hidden flex items-end p-5.5" >
+        <div data-img class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" style="background-image:linear-gradient(135deg,#3a4a40,#1f2b24)"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-black/5"></div>
+        <div class="relative z-10 p-5 text-white"><h3 class="text-xl font-extrabold tracking-[-.02em]">입주청소</h3><p class="text-[13.5px] text-white/80 mt-1.5 leading-snug">신축 분진·미세오염 정밀 제거. 구역별 클리닝.</p></div>
+      </div>
+      <div class="reveal group relative h-[230px] rounded-xl2 overflow-hidden flex items-end" data-d="1">
+        <div data-img class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" style="background-image:linear-gradient(135deg,#5a6b62,#2e3a34)"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-black/5"></div>
+        <div class="relative z-10 p-5 text-white"><h3 class="text-xl font-extrabold tracking-[-.02em]">줄눈시공</h3><p class="text-[13.5px] text-white/80 mt-1.5 leading-snug">오염 침투 차단 + 라인 정렬로 마감 품질 개선.</p></div>
+      </div>
+      <div class="reveal group relative h-[230px] rounded-xl2 overflow-hidden flex items-end" data-d="2">
+        <div data-img class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" style="background-image:linear-gradient(135deg,#566f7a,#293841)"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-black/5"></div>
+        <div class="relative z-10 p-5 text-white"><h3 class="text-xl font-extrabold tracking-[-.02em]">탄성코트</h3><p class="text-[13.5px] text-white/80 mt-1.5 leading-snug">베란다 결로·곰팡이 환경 개선. 방수 마감.</p></div>
+      </div>
+      <div class="reveal group relative h-[230px] rounded-xl2 overflow-hidden flex items-end" data-d="1">
+        <div data-img class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" style="background-image:linear-gradient(135deg,#6b6f78,#33363d)"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-black/5"></div>
+        <div class="relative z-10 p-5 text-white"><h3 class="text-xl font-extrabold tracking-[-.02em]">나노코팅</h3><p class="text-[13.5px] text-white/80 mt-1.5 leading-snug">물때·스케일 관리 부담 완화. 유리·상판 적용.</p></div>
+      </div>
+      <div class="reveal group relative h-[230px] rounded-xl2 overflow-hidden flex items-end" data-d="2">
+        <div data-img class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" style="background-image:linear-gradient(135deg,#7a6a55,#3a3026)"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-black/5"></div>
+        <div class="relative z-10 p-5 text-white"><h3 class="text-xl font-extrabold tracking-[-.02em]">베이크아웃</h3><p class="text-[13.5px] text-white/80 mt-1.5 leading-snug">새집 유해물질(VOCs)·냄새 저감 케어.</p></div>
+      </div>
+      <div class="reveal group relative h-[230px] rounded-xl2 overflow-hidden flex items-end" data-d="3">
+        <div data-img class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" style="background-image:linear-gradient(135deg,#4a6470,#243137)"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-black/5"></div>
+        <div class="relative z-10 p-5 text-white"><h3 class="text-xl font-extrabold tracking-[-.02em]">에어컨분해청소</h3><p class="text-[13.5px] text-white/80 mt-1.5 leading-snug">냉방 효율 회복, 내부 곰팡이·악취 제거.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Before / After interactive slider ===== -->
+<section class="py-24 bg-white border-y border-black/5">
+  <div class="max-w-6xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
+    <div class="reveal">
+      <div id="baSlider" class="ba-slider aspect-[4/3] shadow-xl">
+        <!-- BEFORE (사진 교체: 아래 div의 background) -->
+        <div data-img class="absolute inset-0 bg-cover bg-center" style="background:linear-gradient(160deg,#4b4540,#2a2622)"></div>
+        <div class="absolute top-4 left-4 z-10 bg-black/45 text-white text-xs font-extrabold tracking-widest px-3 py-1.5 rounded-full">BEFORE</div>
+        <!-- AFTER -->
+        <div class="ba-after">
+          <div data-img class="absolute inset-0 bg-cover bg-center" style="background:linear-gradient(160deg,#52766a,#2e5a43)"></div>
+          <div class="absolute top-4 right-4 bg-brand/85 text-white text-xs font-extrabold tracking-widest px-3 py-1.5 rounded-full">AFTER</div>
+        </div>
+        <div class="ba-handle"><div class="ba-knob"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2E5A43" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6M9 6l6 6-6 6" opacity=".0"/><path d="M8 9 4 12l4 3M16 9l4 3-4 3"/></svg></div></div>
+      </div>
+      <p class="text-center text-muted text-sm mt-3">← 가운데 핸들을 드래그해 비교해 보세요 →</p>
+    </div>
+    <div class="reveal" data-d="1">
+      <span class="text-brand-soft font-bold tracking-[.22em] text-xs">BEFORE / AFTER</span>
+      <h2 class="text-[clamp(26px,3.4vw,38px)] font-extrabold tracking-[-.02em] mt-2.5">에어컨 분해청소</h2>
+      <p class="text-muted mt-3 text-[16px]">눈에 보이지 않던 내부 송풍팬·열교환기까지 완전 분해 후 세척합니다.</p>
+      <ul class="mt-6 space-y-2.5">
+        <li class="flex gap-3 font-semibold text-[#3a423c]"><svg class="mt-1 shrink-0" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3F7A5A" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>송풍팬·드레인팬 분해 세척</li>
+        <li class="flex gap-3 font-semibold text-[#3a423c]"><svg class="mt-1 shrink-0" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3F7A5A" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>열교환기 곰팡이·먼지 고압 세척</li>
+        <li class="flex gap-3 font-semibold text-[#3a423c]"><svg class="mt-1 shrink-0" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3F7A5A" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>항균 처리 후 냉방 효율·악취 개선</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Work / Portfolio ===== -->
+<section id="work" class="py-24 max-w-6xl mx-auto px-6 text-center">
+  <span class="reveal inline-block text-brand-soft font-bold tracking-[.22em] text-xs">PORTFOLIO</span>
+  <h2 class="reveal text-[clamp(26px,3.4vw,38px)] font-extrabold tracking-[-.02em] mt-2.5" data-d="1">홈케어 갤러리</h2>
+  <p class="reveal text-muted mt-3" data-d="2">직영팀이 진행한 현장 중심 포트폴리오</p>
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-11">
+    <figure class="reveal rounded-xl2 overflow-hidden border border-black/5 bg-white group"><div data-img class="aspect-square bg-cover bg-center transition-transform duration-500 group-hover:scale-105" style="background:linear-gradient(135deg,#dfe3df,#aeb6ad)"></div><figcaption class="p-3.5 font-bold text-sm text-left">욕실 줄눈 시공</figcaption></figure>
+    <figure class="reveal rounded-xl2 overflow-hidden border border-black/5 bg-white group" data-d="1"><div data-img class="aspect-square bg-cover bg-center transition-transform duration-500 group-hover:scale-105" style="background:linear-gradient(135deg,#cdd6d2,#9fb0a8)"></div><figcaption class="p-3.5 font-bold text-sm text-left">주방 상판 나노코팅</figcaption></figure>
+    <figure class="reveal rounded-xl2 overflow-hidden border border-black/5 bg-white group" data-d="2"><div data-img class="aspect-square bg-cover bg-center transition-transform duration-500 group-hover:scale-105" style="background:linear-gradient(135deg,#cfd4da,#a3acb5)"></div><figcaption class="p-3.5 font-bold text-sm text-left">에어컨 분해청소</figcaption></figure>
+    <figure class="reveal rounded-xl2 overflow-hidden border border-black/5 bg-white group" data-d="3"><div data-img class="aspect-square bg-cover bg-center transition-transform duration-500 group-hover:scale-105" style="background:linear-gradient(135deg,#d8d3cb,#b0a895)"></div><figcaption class="p-3.5 font-bold text-sm text-left">다용도실 탄성코트</figcaption></figure>
+  </div>
+</section>
+
+<!-- ===== Channel banner ===== -->
+<section class="pb-24 max-w-6xl mx-auto px-6">
+  <div class="reveal rounded-[24px] p-11 text-center text-white relative overflow-hidden" style="background:linear-gradient(135deg,#2E5A43,#244736)">
+    <div class="absolute -right-10 -top-10 w-52 h-52 rounded-full bg-white/5 blur-2xl"></div>
+    <h3 class="text-[clamp(20px,2.6vw,28px)] font-extrabold relative">직접 포스팅하는 작업 내용</h3>
+    <p class="text-white/75 mt-2.5 relative">실제 시공 전·후 사진과 고객 후기를 블로그와 유튜브에서 확인하세요.</p>
+    <div class="flex gap-3 justify-center mt-6 flex-wrap relative">
+      <a href="#" target="_blank" rel="noopener" class="bg-white/15 border border-white/30 hover:bg-white/25 transition px-6 py-3 rounded-full font-bold">네이버 블로그</a>
+      <a href="#" target="_blank" rel="noopener" class="bg-white/15 border border-white/30 hover:bg-white/25 transition px-6 py-3 rounded-full font-bold">유튜브 채널</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Process (real sequence) ===== -->
+<section id="process" class="py-24 bg-white border-t border-black/5">
+  <div class="max-w-6xl mx-auto px-6 text-center">
+    <span class="reveal inline-block text-brand-soft font-bold tracking-[.22em] text-xs">SERVICE STANDARD</span>
+    <h2 class="reveal text-[clamp(26px,3.4vw,38px)] font-extrabold tracking-[-.02em] mt-2.5" data-d="1">시공 진행 과정</h2>
+    <p class="reveal text-muted mt-3" data-d="2">상담부터 검수·A/S까지, 순서대로 투명하게.</p>
+    <div class="grid md:grid-cols-5 gap-3.5 mt-11 text-left">
+      <div class="reveal p-6 border border-black/5 rounded-xl2 bg-paper"><div class="text-brand-soft text-[13px] font-extrabold tracking-wider">STEP 01</div><h4 class="font-extrabold text-[17px] mt-2.5">상담·정찰 견적</h4><p class="text-muted text-[13.5px] mt-2 leading-snug">카톡·전화로 정찰제 기준의 명확한 견적을 안내합니다.</p></div>
+      <div class="reveal p-6 border border-black/5 rounded-xl2 bg-paper" data-d="1"><div class="text-brand-soft text-[13px] font-extrabold tracking-wider">STEP 02</div><h4 class="font-extrabold text-[17px] mt-2.5">방문 점검</h4><p class="text-muted text-[13.5px] mt-2 leading-snug">현장 상태와 오염 구역을 확인하고 작업 범위를 확정합니다.</p></div>
+      <div class="reveal p-6 border border-black/5 rounded-xl2 bg-paper" data-d="2"><div class="text-brand-soft text-[13px] font-extrabold tracking-wider">STEP 03</div><h4 class="font-extrabold text-[17px] mt-2.5">직영 시공</h4><p class="text-muted text-[13.5px] mt-2 leading-snug">외주 없는 정직원 팀이 구역별 시스템으로 진행합니다.</p></div>
+      <div class="reveal p-6 border border-black/5 rounded-xl2 bg-paper" data-d="3"><div class="text-brand-soft text-[13px] font-extrabold tracking-wider">STEP 04</div><h4 class="font-extrabold text-[17px] mt-2.5">실시간 공유</h4><p class="text-muted text-[13.5px] mt-2 leading-snug">작업 과정을 사진으로 공유해 직접 확인하실 수 있습니다.</p></div>
+      <div class="reveal p-6 border border-black/5 rounded-xl2 bg-paper" data-d="4"><div class="text-brand-soft text-[13px] font-extrabold tracking-wider">STEP 05</div><h4 class="font-extrabold text-[17px] mt-2.5">검수·A/S</h4><p class="text-muted text-[13.5px] mt-2 leading-snug">함께 검수 후 마무리하고, 미흡한 부분은 책임 보완합니다.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Reviews (marquee) ===== -->
+<section id="reviews" class="py-24 bg-card overflow-hidden">
+  <div class="max-w-6xl mx-auto px-6 text-center mb-11">
+    <span class="reveal inline-block text-brand-soft font-bold tracking-[.22em] text-xs">CUSTOMER REVIEWS</span>
+    <h2 class="reveal text-[clamp(26px,3.4vw,38px)] font-extrabold tracking-[-.02em] mt-2.5" data-d="1">고객 후기</h2>
+  </div>
+  <div class="marquee-wrap space-y-4">
+    <div class="marquee" id="row1"></div>
+    <div class="marquee rev" id="row2"></div>
+  </div>
+</section>
+
+<!-- ===== Footer ===== -->
+<footer class="bg-brand-deep text-[#cdd6cf] pt-14 pb-10">
+  <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-3 gap-8">
+    <div>
+      <h5 class="text-white font-extrabold text-[16px] mb-3.5">꼼꼼클린</h5>
+      <p class="text-[#aab8b0] text-sm leading-relaxed">세심함을 담아 진심으로 청소하는<br>프리미엄 토탈 홈케어 서비스</p>
+      <p class="text-[#8a988f] text-[12.5px] mt-4 leading-relaxed">사업자등록번호: 000-00-00000<br>주소: ○○도 ○○시 ○○로 000</p>
+    </div>
+    <div>
+      <h5 class="text-white font-extrabold text-[16px] mb-3.5">바로가기</h5>
+      <div class="flex flex-col gap-2.5 text-sm">
+        <a href="#top" class="hover:text-white transition">홈</a>
+        <a href="#services" class="hover:text-white transition">서비스</a>
+        <a href="#work" class="hover:text-white transition">작업보기</a>
+        <a href="#reviews" class="hover:text-white transition">후기</a>
+      </div>
+    </div>
+    <div>
+      <h5 class="text-white font-extrabold text-[16px] mb-3.5">문의하기</h5>
+      <div class="flex flex-col gap-2.5 text-sm">
+        <a href="#" data-kakao class="hover:text-white transition">카카오상담</a>
+        <a href="tel:01000000000" class="hover:text-white transition">010-0000-0000</a>
+        <span class="text-[#8a988f]">평일 09:00 - 18:00<br>주말·공휴일 상담 가능</span>
+      </div>
+    </div>
+  </div>
+  <div class="max-w-6xl mx-auto px-6 border-t border-white/10 mt-9 pt-6 text-[12.5px] text-[#8a988f]">© 2025 꼼꼼클린. All Rights Reserved.</div>
+</footer>
+
+<!-- ===== Floating buttons ===== -->
+<div class="fixed right-5 z-[60] flex flex-col gap-3" style="bottom:calc(1.25rem + env(safe-area-inset-bottom))">
+  <button data-quote aria-label="견적 문의" class="animate-pulse2 bg-brand-light text-white rounded-full font-extrabold shadow-xl flex items-center gap-2 px-5 py-3.5 hover:-translate-y-0.5 transition max-[560px]:p-4 max-[560px]:rounded-full">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+    <span class="max-[560px]:hidden">견적 문의</span>
+  </button>
+  <button data-kakao aria-label="카카오 상담" class="bg-kakao text-[#3A1D1D] rounded-full font-extrabold shadow-xl flex items-center gap-2 px-5 py-3.5 hover:-translate-y-0.5 transition max-[560px]:p-4">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 9.5 9.5 0 0 1-3.8-.8L3 21l1.9-5.2A8.38 8.38 0 0 1 4 11.5 8.5 8.5 0 0 1 12.5 3 8.38 8.38 0 0 1 21 11.5Z"/></svg>
+    <span class="max-[560px]:hidden">카카오 상담</span>
+  </button>
+</div>
+
+<!-- ===== Quote modal ===== -->
+<div id="overlay" class="fixed inset-0 z-[70] bg-black/55 hidden items-center justify-center p-5" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div id="modalBox" class="bg-white rounded-[20px] max-w-[520px] w-full max-h-[92vh] overflow-auto shadow-2xl scale-95 opacity-0 transition-all duration-200">
+    <div class="px-7 pt-7 flex justify-between items-start">
+      <div>
+        <h3 id="modalTitle" class="text-[22px] font-extrabold">무료 견적 문의</h3>
+        <p class="text-muted text-sm mt-1.5">연락처를 남겨주시면 빠르게 견적을 안내해 드립니다.</p>
+      </div>
+      <button id="closeModal" aria-label="닫기" class="text-muted text-2xl leading-none">×</button>
+    </div>
+    <div class="px-7 pt-5 pb-7">
+      <div class="mb-4"><label class="block font-bold text-sm mb-2">이름 <span class="text-red-500">*</span></label><input id="f_name" class="w-full border border-black/10 rounded-xl px-3.5 py-3 bg-paper focus:outline-none focus:ring-2 focus:ring-brand-soft" placeholder="성함" /></div>
+      <div class="mb-4"><label class="block font-bold text-sm mb-2">연락처 <span class="text-red-500">*</span></label><input id="f_phone" type="tel" inputmode="numeric" class="w-full border border-black/10 rounded-xl px-3.5 py-3 bg-paper focus:outline-none focus:ring-2 focus:ring-brand-soft" placeholder="010-0000-0000" /></div>
+      <div class="grid grid-cols-2 gap-3 mb-4">
+        <div><label class="block font-bold text-sm mb-2">지역 / 단지명</label><input id="f_addr" class="w-full border border-black/10 rounded-xl px-3.5 py-3 bg-paper focus:outline-none focus:ring-2 focus:ring-brand-soft" placeholder="예: 동탄 자연앤자이" /></div>
+        <div><label class="block font-bold text-sm mb-2">평수</label><input id="f_size" inputmode="numeric" class="w-full border border-black/10 rounded-xl px-3.5 py-3 bg-paper focus:outline-none focus:ring-2 focus:ring-brand-soft" placeholder="예: 33" /></div>
+      </div>
+      <div class="mb-4">
+        <label class="block font-bold text-sm mb-2">원하는 서비스 <span class="text-muted font-medium text-xs">(중복 선택)</span></label>
+        <div class="flex flex-wrap gap-2" id="f_services">
+          <label class="cursor-pointer"><input type="checkbox" value="입주청소" class="peer hidden"><span class="inline-block border border-black/10 rounded-full px-3.5 py-2 text-[13.5px] font-semibold bg-paper peer-checked:bg-brand peer-checked:text-white peer-checked:border-brand transition">입주청소</span></label>
+          <label class="cursor-pointer"><input type="checkbox" value="줄눈시공" class="peer hidden"><span class="inline-block border border-black/10 rounded-full px-3.5 py-2 text-[13.5px] font-semibold bg-paper peer-checked:bg-brand peer-checked:text-white peer-checked:border-brand transition">줄눈시공</span></label>
+          <label class="cursor-pointer"><input type="checkbox" value="탄성코트" class="peer hidden"><span class="inline-block border border-black/10 rounded-full px-3.5 py-2 text-[13.5px] font-semibold bg-paper peer-checked:bg-brand peer-checked:text-white peer-checked:border-brand transition">탄성코트</span></label>
+          <label class="cursor-pointer"><input type="checkbox" value="나노코팅" class="peer hidden"><span class="inline-block border border-black/10 rounded-full px-3.5 py-2 text-[13.5px] font-semibold bg-paper peer-checked:bg-brand peer-checked:text-white peer-checked:border-brand transition">나노코팅</span></label>
+          <label class="cursor-pointer"><input type="checkbox" value="베이크아웃" class="peer hidden"><span class="inline-block border border-black/10 rounded-full px-3.5 py-2 text-[13.5px] font-semibold bg-paper peer-checked:bg-brand peer-checked:text-white peer-checked:border-brand transition">베이크아웃</span></label>
+          <label class="cursor-pointer"><input type="checkbox" value="에어컨분해청소" class="peer hidden"><span class="inline-block border border-black/10 rounded-full px-3.5 py-2 text-[13.5px] font-semibold bg-paper peer-checked:bg-brand peer-checked:text-white peer-checked:border-brand transition">에어컨분해청소</span></label>
+        </div>
+      </div>
+      <div class="mb-4"><label class="block font-bold text-sm mb-2">희망 시공일</label><input id="f_date" type="date" class="w-full border border-black/10 rounded-xl px-3.5 py-3 bg-paper focus:outline-none focus:ring-2 focus:ring-brand-soft" /></div>
+      <div class="mb-4"><label class="block font-bold text-sm mb-2">추가 요청사항</label><textarea id="f_memo" rows="3" class="w-full border border-black/10 rounded-xl px-3.5 py-3 bg-paper focus:outline-none focus:ring-2 focus:ring-brand-soft resize-y" placeholder="평형, 오염 정도, 원하는 일정 등 자유롭게 적어주세요."></textarea></div>
+      <input id="f_company" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" class="absolute -left-[9999px]" />
+      <label class="flex items-start gap-2.5 text-[13px] text-muted mb-4"><input id="f_agree" type="checkbox" class="mt-1" /><span>개인정보 수집·이용에 동의합니다. (견적 상담 목적, 상담 완료 후 파기) <span class="text-red-500">*</span></span></label>
+      <button id="submitBtn" class="w-full bg-brand-light hover:bg-[#356a4d] text-white rounded-xl py-4 font-extrabold transition disabled:opacity-60">견적 신청 보내기</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="fixed left-1/2 bottom-10 -translate-x-1/2 translate-y-5 bg-ink text-white px-6 py-3.5 rounded-full font-bold z-[90] opacity-0 pointer-events-none transition-all"></div>
+
+<script>
+/* ============================================================
+   ⚙️ CONFIG — 이 부분만 교체하세요
+   ============================================================ */
+const CONFIG = {
+  PHONE: "01000000000",
+  KAKAO_URL: "https://pf.kakao.com/_YOUR_CHANNEL/chat",
+  SHEET_ENDPOINT: "https://script.google.com/macros/s/배포ID/exec",
+};
+
+/* ----- 카카오 / 전화 ----- */
+document.querySelectorAll("[data-kakao]").forEach(el=>{
+  if(el.tagName==="A"){ el.href=CONFIG.KAKAO_URL; el.target="_blank"; el.rel="noopener"; }
+  else el.addEventListener("click",()=>window.open(CONFIG.KAKAO_URL,"_blank","noopener"));
+});
+document.querySelectorAll('a[href^="tel:"]').forEach(a=>a.href="tel:"+CONFIG.PHONE);
+
+/* ----- 헤더 스크롤 변형 ----- */
+const hdr=document.getElementById("hdr");
+const onScroll=()=>hdr.classList.toggle("scrolled",window.scrollY>20);
+window.addEventListener("scroll",onScroll,{passive:true}); onScroll();
+
+/* ----- 모바일 메뉴 ----- */
+const burger=document.getElementById("burger"), mm=document.getElementById("mobileMenu");
+burger.addEventListener("click",()=>mm.classList.toggle("hidden"));
+mm.querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>mm.classList.add("hidden")));
+
+/* ----- Reveal on scroll ----- */
+const io=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target);}}),{threshold:.15});
+document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
+
+/* ----- Count up ----- */
+const cio=new IntersectionObserver((es)=>es.forEach(e=>{
+  if(!e.isIntersecting) return;
+  const el=e.target, target=+el.dataset.target; let n=0;
+  const step=Math.max(1,Math.round(target/40));
+  const t=setInterval(()=>{n+=step; if(n>=target){n=target;clearInterval(t);} el.textContent=n;},22);
+  cio.unobserve(el);
+}),{threshold:.6});
+document.querySelectorAll(".count").forEach(el=>cio.observe(el));
+
+/* ----- Before/After 드래그 슬라이더 ----- */
+(function(){
+  const s=document.getElementById("baSlider"); if(!s)return;
+  const after=s.querySelector(".ba-after"), handle=s.querySelector(".ba-handle");
+  let drag=false;
+  const set=(x)=>{const r=s.getBoundingClientRect();let p=(x-r.left)/r.width*100;p=Math.max(0,Math.min(100,p));
+    after.style.clipPath=`inset(0 ${100-p}% 0 0)`; handle.style.left=p+"%";};
+  const start=()=>drag=true; const end=()=>drag=false;
+  s.addEventListener("pointerdown",e=>{start();set(e.clientX);});
+  window.addEventListener("pointermove",e=>{if(drag)set(e.clientX);});
+  window.addEventListener("pointerup",end);
+})();
+
+/* ----- 후기 마퀴 ----- */
+const REVIEWS=[
+  {n:"김** 고객님",m:"동탄 자연앤자이 · 33평",b:"입주청소부터 줄눈까지 한 번에 맡겼는데 따로 부를 필요가 없어 편했어요. 창틀 구석까지 깨끗합니다.",d:"2025.05.12"},
+  {n:"이** 고객님",m:"검단 금강펜테리움 · 38평",b:"에어컨 분해청소 후 송풍구 곰팡이 냄새가 완전히 사라졌어요. 분해 사진까지 보내주셔서 믿음이 갔습니다.",d:"2025.05.20"},
+  {n:"박** 고객님",m:"송도 힐스테이트 · 25평",b:"새집 냄새 때문에 베이크아웃 신청했어요. 입주 전에 진행해주셔서 들어갈 때 한결 쾌적했습니다.",d:"2025.05.24"},
+  {n:"최** 고객님",m:"광명 자이더샵 · 30평",b:"주방 상판 나노코팅 후 물때 관리가 확실히 쉬워졌어요. 마감 라인도 깔끔합니다.",d:"2025.06.01"},
+  {n:"정** 고객님",m:"인천 계양제일풍경채 · 33평",b:"베란다 탄성코트 받았는데 결로·곰팡이 설명이 명확했고 작업도 꼼꼼했습니다.",d:"2025.06.04"},
+  {n:"한** 고객님",m:"청담르엘 · 40평",b:"당일 예약을 잡아주셨고 검수까지 책임감 있게 진행해주셨어요. 재이용 의사 있습니다.",d:"2025.06.08"},
+];
+function card(r){
+  return `<div class="w-[300px] shrink-0 bg-white border border-black/5 rounded-xl2 p-5.5">
+    <div class="flex justify-between items-start p-0.5"><div><div class="font-extrabold text-[15px]">${r.n}</div><div class="text-muted text-[12.5px] mt-0.5">${r.m}</div></div><div class="text-[#f0a72e] text-[13px] tracking-wider">★★★★★</div></div>
+    <p class="mt-3.5 text-sm text-[#3a423c] leading-relaxed px-0.5">${r.b}</p>
+    <div class="mt-3.5 text-[12.5px] text-brand-light font-bold px-0.5">시공 완료 · ${r.d}</div></div>`;
+}
+const seq=[...REVIEWS,...REVIEWS].map(card).join("");
+document.getElementById("row1").innerHTML=seq;
+document.getElementById("row2").innerHTML=[...REVIEWS.slice().reverse(),...REVIEWS.slice().reverse()].map(card).join("");
+
+/* ----- 모달 ----- */
+const overlay=document.getElementById("overlay"), box=document.getElementById("modalBox");
+function openModal(){overlay.classList.remove("hidden");overlay.classList.add("flex");document.body.style.overflow="hidden";
+  requestAnimationFrame(()=>{box.classList.remove("scale-95","opacity-0");});document.getElementById("f_name").focus();}
+function closeModal(){box.classList.add("scale-95","opacity-0");document.body.style.overflow="";
+  setTimeout(()=>{overlay.classList.add("hidden");overlay.classList.remove("flex");},180);}
+document.querySelectorAll("[data-quote]").forEach(b=>b.addEventListener("click",openModal));
+document.getElementById("closeModal").addEventListener("click",closeModal);
+overlay.addEventListener("click",e=>{if(e.target===overlay)closeModal();});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!overlay.classList.contains("hidden"))closeModal();});
+
+/* ----- 토스트 ----- */
+function toast(msg){const t=document.getElementById("toast");t.textContent=msg;
+  t.classList.add("opacity-100","translate-y-0");t.classList.remove("opacity-0","translate-y-5");
+  setTimeout(()=>{t.classList.remove("opacity-100","translate-y-0");t.classList.add("opacity-0","translate-y-5");},2800);}
+
+/* ----- 견적 제출 → 구글시트 ----- */
+const submitBtn=document.getElementById("submitBtn");
+submitBtn.addEventListener("click", async ()=>{
+  if(document.getElementById("f_company").value) return; // honeypot
+  const name=document.getElementById("f_name").value.trim();
+  const phone=document.getElementById("f_phone").value.trim();
+  if(!name) return toast("이름을 입력해주세요");
+  if(!phone) return toast("연락처를 입력해주세요");
+  if(!document.getElementById("f_agree").checked) return toast("개인정보 수집에 동의해주세요");
+  const services=[...document.querySelectorAll('#f_services input:checked')].map(c=>c.value).join(", ");
+  const payload={ timestamp:new Date().toLocaleString("ko-KR"), name, phone,
+    addr:document.getElementById("f_addr").value.trim(), size:document.getElementById("f_size").value.trim(),
+    services, date:document.getElementById("f_date").value, memo:document.getElementById("f_memo").value.trim() };
+  submitBtn.disabled=true; submitBtn.textContent="전송 중...";
+  try{
+    await fetch(CONFIG.SHEET_ENDPOINT,{method:"POST",mode:"no-cors",
+      headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(payload)});
+    closeModal(); toast("견적 신청이 접수되었습니다. 곧 연락드릴게요!");
+    document.querySelectorAll("#overlay input, #overlay textarea").forEach(el=>{ el.type==="checkbox"?el.checked=false:el.value=""; });
+  }catch(err){ toast("전송에 실패했습니다. 카카오 상담으로 문의해주세요."); }
+  finally{ submitBtn.disabled=false; submitBtn.textContent="견적 신청 보내기"; }
+});
+</script>
+
+<!-- ============================================================
+  📄 Google Apps Script (시트에 붙여넣을 코드)
+  1) 시트 1행 헤더:  timestamp | name | phone | addr | size | services | date | memo
+  2) 확장 프로그램 → Apps Script → 붙여넣기
+  3) 배포 → 새 배포 → 웹 앱 (실행: 나 / 액세스: 모든 사용자)
+  4) 웹앱 URL → 위 CONFIG.SHEET_ENDPOINT
+
+  function doPost(e){
+    try{
+      var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+      var d = JSON.parse(e.postData.contents);
+      sheet.appendRow([d.timestamp,d.name,d.phone,d.addr,d.size,d.services,d.date,d.memo]);
+      return ContentService.createTextOutput(JSON.stringify({ok:true})).setMimeType(ContentService.MimeType.JSON);
+    }catch(err){
+      return ContentService.createTextOutput(JSON.stringify({ok:false,error:String(err)})).setMimeType(ContentService.MimeType.JSON);
+    }
+  }
+  ============================================================ -->
+</body>
+</html>
