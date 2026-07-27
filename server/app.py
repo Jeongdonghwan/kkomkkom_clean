@@ -83,10 +83,11 @@ def list_inquiries():
         conn = db()
         with conn:
             with conn.cursor() as cur:
+                # 인자 없이 execute하므로 %는 이스케이프하지 않는다
                 cur.execute(
-                    "SELECT id, DATE_FORMAT(created_at, '%%Y-%%m-%%d %%H:%%i') AS created_at,"
+                    "SELECT id, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i') AS created_at,"
                     " name, phone, addr, size, services,"
-                    " IFNULL(DATE_FORMAT(hope_date, '%%Y-%%m-%%d'), '') AS hope_date,"
+                    " IFNULL(DATE_FORMAT(hope_date, '%Y-%m-%d'), '') AS hope_date,"
                     " IFNULL(memo, '') AS memo"
                     " FROM inquiries ORDER BY id DESC LIMIT 500"
                 )
