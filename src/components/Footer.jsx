@@ -22,8 +22,9 @@ export default function Footer() {
             <br />
             프리미엄 토탈 홈케어 서비스
           </p>
-          {/* TODO: 실제 사업자등록번호·주소로 교체 (src/config.js BUSINESS) */}
           <p className="text-[#8a988f] text-[12.5px] mt-4 leading-relaxed">
+            상호: {BUSINESS.name} | 대표: {BUSINESS.owner}
+            <br />
             사업자등록번호: {BUSINESS.regNo}
             <br />
             주소: {BUSINESS.address}

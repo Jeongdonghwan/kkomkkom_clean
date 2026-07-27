@@ -2,9 +2,9 @@
    ⚙️ CONFIG — 배포 전 이 값만 실제값으로 교체하세요
    ============================================================ */
 export const CONFIG = {
-  PHONE: "01000000000", // TODO: 실제 전화번호 (숫자만)
-  KAKAO_URL: "https://pf.kakao.com/_YOUR_CHANNEL/chat", // TODO: 카카오 채널 chat URL
-  SHEET_ENDPOINT: "https://script.google.com/macros/s/배포ID/exec", // TODO: Apps Script 웹앱 URL
+  PHONE: "01024402443",
+  KAKAO_URL: "https://pf.kakao.com/_CtWsn/chat", // 꼼꼼클린 카카오 채널 1:1 채팅
+  API_BASE: "/api", // 견적 접수·조회 API (서버 PHP, 로컬 dev는 scripts/dev-api.mjs 프록시)
 };
 
 // 전화번호 표시용 포맷 (010-0000-0000)
@@ -21,11 +21,12 @@ export const CHANNELS = {
   YOUTUBE: "#", // TODO: 유튜브 채널 URL
 };
 
-// 푸터 사업자 정보 (TODO: 실제값 교체)
+// 푸터 사업자 정보
 export const BUSINESS = {
   name: "꼼꼼클린",
-  regNo: "000-00-00000", // TODO: 사업자등록번호
-  address: "○○도 ○○시 ○○로 000", // TODO: 주소
+  owner: "이준호",
+  regNo: "521-04-03123",
+  address: "경기도 안양시 동안구 학의로 126, 지하층 제9호(관양동, 한가람한양아파트 상가동)",
   hours: "평일 09:00 - 18:00",
   hoursNote: "주말·공휴일 상담 가능",
 };

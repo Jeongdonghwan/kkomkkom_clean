@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { CONFIG } from "../config.js";
 import { useUI, openKakao } from "../ui.jsx";
+import EquipmentShowcase from "./EquipmentShowcase.jsx";
 
 const SERVICE_OPTIONS = [
   "입주청소",
@@ -54,7 +55,6 @@ export default function QuoteSection({ defaultService }) {
     if (!form.agree) return toast("개인정보 수집에 동의해주세요");
 
     const payload = {
-      timestamp: new Date().toLocaleString("ko-KR"),
       name: form.name.trim(),
       phone: form.phone.trim(),
       addr: form.addr.trim(),
@@ -62,16 +62,18 @@ export default function QuoteSection({ defaultService }) {
       services: services.join(", "),
       date: form.date,
       memo: form.memo.trim(),
+      company: form.company, // honeypot — 서버에서 걸러냄
     };
 
     setSubmitting(true);
     try {
-      await fetch(CONFIG.SHEET_ENDPOINT, {
+      const res = await fetch(`${CONFIG.API_BASE}/inquiry.php`, {
         method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
+      const out = await res.json().catch(() => null);
+      if (!res.ok || !out?.ok) throw new Error(out?.error || res.status);
       setForm(EMPTY);
       setServices(defaultService ? [defaultService] : []);
       toast("견적 신청이 접수되었습니다. 곧 연락드릴게요!");
@@ -85,8 +87,8 @@ export default function QuoteSection({ defaultService }) {
   return (
     <section id="quote" className="py-24 bg-card scroll-mt-[74px]">
       <div className="max-w-6xl mx-auto px-6">
-        <div className="grid lg:grid-cols-2 gap-12 items-start">
-          {/* 좌: 카피 + 신뢰 요소 */}
+        {/* 상단 가로 인트로: 좌 카피 / 우 신뢰 요소 */}
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-start">
           <div className="reveal">
             <span className="inline-block text-brand-soft font-bold tracking-[.22em] text-xs">
               GET A QUOTE
@@ -100,7 +102,9 @@ export default function QuoteSection({ defaultService }) {
               연락처와 원하는 서비스만 남겨주시면, 정찰제 기준으로 빠르게 견적을 안내해 드립니다.
               필요한 케어를 한 번에 묶어 상담받으세요.
             </p>
-            <ul className="mt-7 space-y-3">
+          </div>
+          <div className="reveal" data-d="1">
+            <ul className="space-y-3 lg:mt-9">
               {TRUST.map((t) => (
                 <li key={t} className="flex gap-3 font-semibold text-[#3a423c]">
                   <svg className="mt-0.5 shrink-0" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3F7A5A" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
@@ -112,13 +116,20 @@ export default function QuoteSection({ defaultService }) {
             </ul>
             <button
               onClick={openKakao}
-              className="mt-8 inline-flex items-center gap-2 bg-kakao text-[#3A1D1D] px-6 py-3.5 rounded-full font-extrabold hover:brightness-95 transition"
+              className="mt-7 inline-flex items-center gap-2 bg-kakao text-[#3A1D1D] px-6 py-3.5 rounded-full font-extrabold hover:brightness-95 transition"
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 9.5 9.5 0 0 1-3.8-.8L3 21l1.9-5.2A8.38 8.38 0 0 1 4 11.5 8.5 8.5 0 0 1 12.5 3 8.38 8.38 0 0 1 21 11.5Z" />
               </svg>
               카카오로 바로 상담하기
             </button>
+          </div>
+        </div>
+
+        {/* 하단: 좌 장비 소개 / 우 견적 폼 (같은 높이) */}
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-stretch mt-12">
+          <div className="reveal lg:relative">
+            <EquipmentShowcase />
           </div>
 
           {/* 우: 견적 폼 */}

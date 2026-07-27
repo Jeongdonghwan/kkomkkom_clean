@@ -8,6 +8,7 @@ import FloatingButtons from "./components/FloatingButtons.jsx";
 import Toast from "./components/Toast.jsx";
 import Home from "./pages/Home.jsx";
 import ServiceDetail from "./pages/ServiceDetail.jsx";
+import Admin from "./pages/Admin.jsx";
 
 export default function App() {
   const [toastMsg, setToastMsg] = useState("");
@@ -28,6 +29,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/services/:slug" element={<ServiceDetail />} />
+            <Route path="/admin" element={<Admin />} />
           </Routes>
         </main>
         <Footer />

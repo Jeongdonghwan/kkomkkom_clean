@@ -7,6 +7,7 @@ export const SERVICES = [
     desc: "신축 분진·미세오염 정밀 제거. 구역별 클리닝.",
     img: "/images/svc-ipju.jpg",
     heroImg: "/images/svc-ipju.jpg",
+    guideImg: "/images/guide-ipju.webp",
     tagline: "새 집의 첫인상을, 가장 깨끗하게",
     intro:
       "신축·이사 후 남은 분진과 미세오염을 구역별로 정밀 제거합니다. 눈에 보이는 곳은 물론, 창틀·몰딩·수납장 내부까지 빠짐없이 클리닝합니다.",
@@ -38,6 +39,7 @@ export const SERVICES = [
     desc: "오염 침투 차단 + 라인 정렬로 마감 품질 개선.",
     img: "/images/svc-julnun.jpg",
     heroImg: "/images/svc-julnun.jpg",
+    guideImg: "/images/guide-julnun.webp",
     tagline: "타일 사이, 오염이 스며들지 않게",
     intro:
       "기존 백시멘트 줄눈의 오염·곰팡이를 제거하고, 내오염·방수 성능의 전용 자재로 라인을 균일하게 재시공합니다.",
@@ -69,6 +71,7 @@ export const SERVICES = [
     desc: "베란다 결로·곰팡이 환경 개선. 방수 마감.",
     img: "/images/svc-elastic.jpg",
     heroImg: "/images/svc-elastic.jpg",
+    guideImg: "/images/guide-elastic.webp",
     tagline: "결로·곰팡이에 강한 베란다 마감",
     intro:
       "베란다·다용도실 벽면에 신축성 있는 탄성 도막을 형성해 미세균열과 결로·곰팡이 환경을 개선하고 깔끔하게 마감합니다.",
@@ -100,6 +103,7 @@ export const SERVICES = [
     desc: "물때·스케일 관리 부담 완화. 유리·상판 적용.",
     img: "/images/svc-nano.jpg",
     heroImg: "/images/svc-nano.jpg",
+    guideImg: "/images/guide-nano.webp",
     tagline: "관리가 쉬워지는 표면 코팅",
     intro:
       "유리·주방 상판 등 표면에 발수·발유 코팅막을 형성해 오염이 덜 묻고 닦기 쉬운 상태로 만들어 일상 관리 부담을 줄입니다.",
@@ -131,6 +135,7 @@ export const SERVICES = [
     desc: "새집 유해물질(VOCs)·냄새 저감 케어.",
     img: "/images/svc-bakeout.jpg",
     heroImg: "/images/svc-bakeout.jpg",
+    guideImg: "/images/guide-bakeout.webp",
     tagline: "입주 전, 새집 냄새를 빼는 시간",
     intro:
       "실내 온도를 높여 마감재에서 방출되는 휘발성유기화합물(VOCs)을 끌어낸 뒤 환기로 배출하는 과정을 반복해 새집 냄새와 유해물질을 저감합니다.",

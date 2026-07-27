@@ -3,7 +3,6 @@ import { SERVICES, getServiceBySlug } from "../data/services.js";
 import { useReveal } from "../hooks/useReveal.js";
 import { scrollToQuote } from "../ui.jsx";
 import { CONFIG } from "../config.js";
-import BeforeAfter from "../components/BeforeAfter.jsx";
 import QuoteSection from "../components/QuoteSection.jsx";
 
 export default function ServiceDetail() {
@@ -67,15 +66,24 @@ export default function ServiceDetail() {
         </div>
       </section>
 
-      {/* 3) Before / After */}
-      <BeforeAfter
-        eyebrow="BEFORE / AFTER"
-        title={svc.beforeAfter.title}
-        desc={svc.beforeAfter.desc}
-        beforeImg={svc.beforeAfter.beforeImg}
-        afterImg={svc.beforeAfter.afterImg}
-        checks={svc.beforeAfter.checks}
-      />
+      {/* 2.5) 시공 안내 인포그래픽 */}
+      {svc.guideImg && (
+        <section className="pb-24 max-w-6xl mx-auto px-6 text-center">
+          <span className="reveal inline-block text-brand-soft font-bold tracking-[.22em] text-xs">AT A GLANCE</span>
+          <h2 className="reveal text-[clamp(26px,3.4vw,38px)] font-extrabold tracking-[-.02em] mt-2.5" data-d="1">
+            한눈에 보는 시공 안내
+          </h2>
+          <img
+            src={svc.guideImg}
+            alt={`${svc.title} 시공 전후 안내`}
+            loading="lazy"
+            width="1536"
+            height="1024"
+            className="reveal w-full h-auto rounded-xl2 border border-black/5 shadow-xl mt-11"
+            data-d="2"
+          />
+        </section>
+      )}
 
       {/* 4) 시공 공정 */}
       <section className="py-24 bg-card">
