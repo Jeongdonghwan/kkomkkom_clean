@@ -9,8 +9,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# 서버 배포용 실제 DB 설정 (public/api/config.sample.php 참고)
-public/api/config.php
+# 서버 배포용 실제 설정 (server/config.sample.json 참고)
+server/config.json
+server/venv/
 
 # 원본 사진/영상 소스 (변환본은 public/에 포함)
 시공사진/

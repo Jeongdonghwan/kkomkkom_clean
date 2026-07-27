@@ -37,7 +37,7 @@ export default function Admin() {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch(`${CONFIG.API_BASE}/list.php`, {
+      const res = await fetch(`${CONFIG.API_BASE}/list`, {
         headers: { "X-Admin-Id": a.id, "X-Admin-Pw": a.pw },
       });
       const out = await res.json().catch(() => null);

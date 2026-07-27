@@ -1,0 +1,8 @@
+{
+  "db_host": "localhost",
+  "db_name": "kkomkkom",
+  "db_user": "kkomkkom",
+  "db_pass": "DB비밀번호",
+  "admin_id": "admin",
+  "admin_pw": "1234"
+}

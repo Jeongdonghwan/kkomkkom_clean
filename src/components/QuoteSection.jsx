@@ -67,7 +67,7 @@ export default function QuoteSection({ defaultService }) {
 
     setSubmitting(true);
     try {
-      const res = await fetch(`${CONFIG.API_BASE}/inquiry.php`, {
+      const res = await fetch(`${CONFIG.API_BASE}/inquiry`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

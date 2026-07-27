@@ -4,7 +4,7 @@
 export const CONFIG = {
   PHONE: "01024402443",
   KAKAO_URL: "https://pf.kakao.com/_CtWsn/chat", // 꼼꼼클린 카카오 채널 1:1 채팅
-  API_BASE: "/api", // 견적 접수·조회 API (서버 PHP, 로컬 dev는 scripts/dev-api.mjs 프록시)
+  API_BASE: "/api", // 견적 접수·조회 API (서버 Flask, 로컬 dev는 scripts/dev-api.mjs 프록시)
 };
 
 // 전화번호 표시용 포맷 (010-0000-0000)

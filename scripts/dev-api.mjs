@@ -1,4 +1,4 @@
-// 로컬 개발용 목(mock) API — 프로덕션 PHP(public/api/*.php)와 동일한 인터페이스.
+// 로컬 개발용 목(mock) API — 프로덕션 Flask(server/app.py)와 동일한 인터페이스.
 // 실행: node scripts/dev-api.mjs  (vite dev 서버가 /api 요청을 이쪽으로 프록시)
 // 관리자 계정: admin / 1234
 import http from "node:http";
@@ -40,7 +40,7 @@ http
   .createServer((req, res) => {
     const url = new URL(req.url, "http://localhost");
 
-    if (req.method === "POST" && url.pathname === "/api/inquiry.php") {
+    if (req.method === "POST" && url.pathname === "/api/inquiry") {
       let raw = "";
       req.on("data", (c) => (raw += c));
       req.on("end", () => {
@@ -70,7 +70,7 @@ http
       return;
     }
 
-    if (req.method === "GET" && url.pathname === "/api/list.php") {
+    if (req.method === "GET" && url.pathname === "/api/list") {
       const id = req.headers["x-admin-id"] || "";
       const pw = req.headers["x-admin-pw"] || "";
       if (id !== ADMIN_ID || pw !== ADMIN_PW)
