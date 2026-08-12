@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 const DEFAULTS = {
-  eyebrow: "BEFORE / AFTER",
+  eyebrow: "ON-SITE VIDEO",
   title: "에어컨 분해청소",
   desc: "눈에 보이지 않던 내부 송풍팬·열교환기까지 완전 분해 후 세척합니다.",
   beforeImg: "/images/ba-aircon-before.jpg",
   afterImg: "/images/ba-aircon-after.jpg",
-  afterVideo: "/videos/ba-aircon-after.mp4", // 있으면 AFTER 면을 영상으로 표시
+  video: "/videos/ba-aircon-after.mp4", // 있으면 슬라이더 대신 영상만 표시
   checks: [
     "송풍팬·드레인팬 분해 세척",
     "열교환기 곰팡이·먼지 고압 세척",
@@ -15,7 +15,7 @@ const DEFAULTS = {
 };
 
 export default function BeforeAfter(props) {
-  const { eyebrow, title, desc, beforeImg, afterImg, afterVideo, checks } = { ...DEFAULTS, ...props };
+  const { eyebrow, title, desc, beforeImg, afterImg, video, checks } = { ...DEFAULTS, ...props };
   const sliderRef = useRef(null);
   const dragging = useRef(false);
   const [pos, setPos] = useState(50); // after 영역 비율 (%)
@@ -48,59 +48,60 @@ export default function BeforeAfter(props) {
     <section className="py-24 bg-white border-y border-black/5">
       <div className="max-w-6xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
         <div className="reveal">
-          <div
-            ref={sliderRef}
-            className="ba-slider aspect-[4/3] shadow-xl"
-            onPointerDown={(e) => {
-              dragging.current = true;
-              setFromClientX(e.clientX);
-            }}
-          >
-            {/* BEFORE (TODO: 실제 시공 전 사진 교체) */}
-            <img
-              src={beforeImg}
-              alt="시공 전"
-              className="absolute inset-0 w-full h-full object-cover"
+          {video ? (
+            /* 시공 영상 — 세로 릴스 카드 */
+            <video
+              src={video}
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              className="mx-auto w-full max-w-[320px] aspect-[9/16] object-cover rounded-[20px] shadow-xl bg-ink"
             />
-            <div className="absolute top-4 left-4 z-10 bg-black/45 text-white text-xs font-extrabold tracking-widest px-3 py-1.5 rounded-full">
-              BEFORE
-            </div>
-
-            {/* AFTER — 영상이 있으면 영상, 없으면 사진 */}
-            <div className="ba-after" style={{ clipPath: `inset(0 ${100 - pos}% 0 0)` }}>
-              {afterVideo ? (
-                <video
-                  src={afterVideo}
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  preload="metadata"
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
-              ) : (
+          ) : (
+            <>
+              <div
+                ref={sliderRef}
+                className="ba-slider aspect-[4/3] shadow-xl"
+                onPointerDown={(e) => {
+                  dragging.current = true;
+                  setFromClientX(e.clientX);
+                }}
+              >
                 <img
-                  src={afterImg}
-                  alt="시공 후"
+                  src={beforeImg}
+                  alt="시공 전"
                   className="absolute inset-0 w-full h-full object-cover"
                 />
-              )}
-              <div className="absolute top-4 right-4 bg-brand/85 text-white text-xs font-extrabold tracking-widest px-3 py-1.5 rounded-full">
-                AFTER
-              </div>
-            </div>
+                <div className="absolute top-4 left-4 z-10 bg-black/45 text-white text-xs font-extrabold tracking-widest px-3 py-1.5 rounded-full">
+                  BEFORE
+                </div>
 
-            <div className="ba-handle" style={{ left: `${pos}%` }}>
-              <div className="ba-knob">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2E5A43" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M8 9 4 12l4 3M16 9l4 3-4 3" />
-                </svg>
+                <div className="ba-after" style={{ clipPath: `inset(0 ${100 - pos}% 0 0)` }}>
+                  <img
+                    src={afterImg}
+                    alt="시공 후"
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                  <div className="absolute top-4 right-4 bg-brand/85 text-white text-xs font-extrabold tracking-widest px-3 py-1.5 rounded-full">
+                    AFTER
+                  </div>
+                </div>
+
+                <div className="ba-handle" style={{ left: `${pos}%` }}>
+                  <div className="ba-knob">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2E5A43" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M8 9 4 12l4 3M16 9l4 3-4 3" />
+                    </svg>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-          <p className="text-center text-muted text-sm mt-3">
-            ← 가운데 핸들을 드래그해 비교해 보세요 →
-          </p>
+              <p className="text-center text-muted text-sm mt-3">
+                ← 가운데 핸들을 드래그해 비교해 보세요 →
+              </p>
+            </>
+          )}
         </div>
 
         <div className="reveal" data-d="1">
