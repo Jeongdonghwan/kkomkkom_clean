@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+
+Sitemap: https://xn--cs0ba241fbwx.com/sitemap.xml
