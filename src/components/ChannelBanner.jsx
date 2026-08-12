@@ -12,7 +12,7 @@ export default function ChannelBanner() {
           직접 포스팅하는 작업 내용
         </h3>
         <p className="text-white/75 mt-2.5 relative">
-          실제 시공 전·후 사진과 고객 후기를 블로그와 유튜브에서 확인하세요.
+          실제 시공 전·후 사진과 고객 후기를 블로그와 인스타그램에서 확인하세요.
         </p>
         <div className="flex gap-3 justify-center mt-6 flex-wrap relative">
           <a
@@ -28,16 +28,17 @@ export default function ChannelBanner() {
             네이버 블로그
           </a>
           <a
-            href={CHANNELS.YOUTUBE}
+            href={CHANNELS.INSTAGRAM}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 bg-white/15 border border-white/30 hover:bg-white/25 transition px-6 py-3 rounded-full font-bold"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="2.5" y="6" width="19" height="12" rx="3" />
-              <path d="M10 9.2v5.6l5-2.8z" fill="currentColor" stroke="none" />
+              <rect x="3" y="3" width="18" height="18" rx="5" />
+              <circle cx="12" cy="12" r="4" />
+              <circle cx="17.2" cy="6.8" r="0.6" fill="currentColor" stroke="none" />
             </svg>
-            유튜브 채널
+            인스타그램
           </a>
         </div>
       </div>

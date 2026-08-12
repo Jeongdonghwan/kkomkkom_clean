@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ffprobe -v error -select_streams v:0 -show_entries stream=width,height,duration -of csv copy_DF52DEF8-67F4-419F-9DC4-38DA26DF6041.mov)",
+      "Bash(ffmpeg -y -v error -i copy_DF52DEF8-67F4-419F-9DC4-38DA26DF6041.mov -vf scale=720:1280 -c:v libx264 -crf 28 -preset slow -movflags +faststart -an public/videos/ba-aircon-after.mp4)"
+    ]
+  }
+}

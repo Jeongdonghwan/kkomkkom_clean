@@ -15,10 +15,10 @@ export function formatPhone(num) {
   return num;
 }
 
-// 외부 채널 링크 (TODO: 실제 URL 교체)
+// 외부 채널 링크
 export const CHANNELS = {
   BLOG: "#", // TODO: 네이버 블로그 URL
-  YOUTUBE: "#", // TODO: 유튜브 채널 URL
+  INSTAGRAM: "https://www.instagram.com/reel/Da75MYvyoV7/?igsh=Mzl1cTY2cjUyMWli",
 };
 
 // 푸터 사업자 정보

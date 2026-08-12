@@ -16,3 +16,4 @@ server/venv/
 # 원본 사진/영상 소스 (변환본은 public/에 포함)
 시공사진/
 시공장비/
+copy_*.mov
